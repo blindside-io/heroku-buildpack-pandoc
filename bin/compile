@@ -1,13 +1,42 @@
 #!/usr/bin/env bash
 # bin/compile <build-dir> <cache-dir>
 
+set -e
+
 indent() {
   sed -u 's/^/       /'
 }
 
+function topic() {
+  echo "-----> $*"
+}
+
 PANDOC_VERSION="1.17.2"
 GITHUB_FILE="pandoc-1.17.2-1-amd64.deb"
-CACHE_DIR=$1
+BUILD_DIR=$1
+CACHE_DIR=$2
 
+topic "Downloading pandoc $PANDOC_VERSION"
 wget -O $CACHE_DIR/pandoc.deb "https://github.com/jgm/pandoc/releases/download/$PANDOC_VERSION/$GITHUB_FILE"
-dpkg -i $CACHE_DIR/pandoc.deb
+
+mkdir -p $BUILD_DIR/.pandoc-dpkg/
+topic "Extracting pandoc"
+dpkg -x $CACHE_DIR/pandoc.deb $BUILD_DIR/.pandoc-dpkg/
+
+
+# Blatantly stolen from https://github.com/rricard/heroku-buildpack-dpkg/blob/master/bin/compile
+topic "Writing profile script"
+mkdir -p $BUILD_DIR/.profile.d
+cat <<EOF >$BUILD_DIR/.profile.d/000_pandoc.sh
+export PATH="\$HOME/.pandoc-dpkg/usr/bin:$PATH"
+export LD_LIBRARY_PATH="\$HOME/.pandoc-dpkg/usr/lib:\$LD_LIBRARY_PATH"
+export LD_LIBRARY_PATH="\$HOME/.pandoc-dpkg/usr/lib/x86_64-linux-gnu:\$LD_LIBRARY_PATH"
+export LD_LIBRARY_PATH="\$HOME/.pandoc-dpkg/lib:\$LD_LIBRARY_PATH"
+export LD_LIBRARY_PATH="\$HOME/.pandoc-dpkg/lib/x86_64-linux-gnu:\$LD_LIBRARY_PATH"
+export LD_LIBRARY_PATH="\$HOME/.pandoc-dpkg/lib64:\$LD_LIBRARY_PATH"
+export INCLUDE_PATH="\$HOME/.pandoc-dpkg/usr/include:\$INCLUDE_PATH"
+export CPATH="\$INCLUDE_PATH"
+export CPPPATH="\$INCLUDE_PATH"
+EOF
+export HOME=$BUILD_DIR
+sh $HOME/.profile.d/000_pandoc.sh

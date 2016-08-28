@@ -5,9 +5,11 @@
 testCompile() {
   compile
   assertEquals 0 ${rtrn}
-  assertEquals "" "$(cat ${STD_ERR})"
+  assertContains "Downloading pandoc 1.17.2" "$(cat ${STD_OUT})"
+  assertContains "Extracting pandoc" "$(cat ${STD_OUT})"
+  assertContains "Writing profile script" "$(cat ${STD_OUT})"
 
-  capture pandoc --help
+  capture $BUILD_DIR/.pandoc-dpkg/usr/bin/pandoc --help
   assertEquals 0 ${rtrn}
   assertContains "pandoc" "$(cat ${STD_OUT})"
 }

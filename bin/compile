@@ -17,7 +17,7 @@ BUILD_DIR=$1
 CACHE_DIR=$2
 
 topic "Downloading pandoc $PANDOC_VERSION"
-wget -O $CACHE_DIR/pandoc.deb "https://github.com/jgm/pandoc/releases/download/$PANDOC_VERSION/$GITHUB_FILE"
+curl -L -o $CACHE_DIR/pandoc.deb "https://github.com/jgm/pandoc/releases/download/$PANDOC_VERSION/$GITHUB_FILE"
 
 mkdir -p $BUILD_DIR/.pandoc-dpkg/
 topic "Extracting pandoc"

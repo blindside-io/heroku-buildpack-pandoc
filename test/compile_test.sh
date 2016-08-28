@@ -5,6 +5,7 @@
 testCompile() {
   compile
   assertEquals 0 ${rtrn}
+  assertEquals "" "$(cat ${STD_ERR})"
 
   capture pandoc --help
   assertEquals 0 ${rtrn}

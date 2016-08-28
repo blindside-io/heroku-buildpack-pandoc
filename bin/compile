@@ -16,12 +16,15 @@ GITHUB_FILE="pandoc-1.17.2-1-amd64.deb"
 BUILD_DIR=$1
 CACHE_DIR=$2
 
+DPKG_CACHE_DIR="$CACHE_DIR/dpkg/cache"
+mkdir -p $DPKG_CACHE_DIR
+
 topic "Downloading pandoc $PANDOC_VERSION"
-curl -L -o $CACHE_DIR/pandoc.deb "https://github.com/jgm/pandoc/releases/download/$PANDOC_VERSION/$GITHUB_FILE"
+curl -L -o $DPKG_CACHE_DIR/pandoc.deb "https://github.com/jgm/pandoc/releases/download/$PANDOC_VERSION/$GITHUB_FILE"
 
 mkdir -p $BUILD_DIR/.pandoc-dpkg/
 topic "Extracting pandoc"
-dpkg -x $CACHE_DIR/pandoc.deb $BUILD_DIR/.pandoc-dpkg/
+dpkg -x $DPKG_CACHE_DIR/pandoc.deb $BUILD_DIR/.pandoc-dpkg/
 
 
 # Blatantly stolen from https://github.com/rricard/heroku-buildpack-dpkg/blob/master/bin/compile

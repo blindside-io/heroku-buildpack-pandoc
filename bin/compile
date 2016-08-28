@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# bin/compile <build-dir> <cache-dir>
+
+indent() {
+  sed -u 's/^/       /'
+}
+
+PANDOC_VERSION="1.17.2"
+GITHUB_FILE="pandoc-1.17.2-1-amd64.deb"
+CACHE_DIR=$1
+
+wget -O $CACHE_DIR/pandoc.deb "https://github.com/jgm/pandoc/releases/download/$PANDOC_VERSION/$GITHUB_FILE"
+dpkg -i $CACHE_DIR/pandoc.deb

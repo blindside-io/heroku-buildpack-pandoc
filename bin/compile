@@ -11,8 +11,8 @@ function topic() {
   echo "-----> $*"
 }
 
-PANDOC_VERSION="1.17.2"
-GITHUB_FILE="pandoc-1.17.2-1-amd64.deb"
+PANDOC_VERSION="1.19.2.1"
+GITHUB_FILE="pandoc-1.19.2.1-1-amd64.deb"
 BUILD_DIR=$1
 CACHE_DIR=$2
 
